@@ -1,68 +1,63 @@
-# PCGen → Roll20 Pathfinder Community Sheet Importer
+# PCGen → Roll20: Quick Import Guide
 
-A PCGen output-sheet template that exports a character as JSON in the exact shape
-the Roll20 **Pathfinder Community** sheet's built-in *HeroLab Character Import*
-already accepts. This lets you move PCGen characters into Roll20 through the
-sheet's existing, unmodified importer — no sheet changes required.
+Move your PCGen character into the Roll20 Pathfinder Community sheet in 4 steps.
 
-## How it works
+## One-time setup
 
-The Roll20 Pathfinder Community sheet ships with a HeroLab importer
-(`HLImport.js`) that reads a JSON object (`document.public.character...`) from a
-text box and fills in the sheet. Instead of forking that importer, this project
-makes PCGen emit JSON in the same shape, so the stock importer does all the work.
+1. Grab the template file `csheet_roll20_pf_community.json.ftl`.
+2. Drop it into your PCGen folder:
+   `…\PCGen\outputsheets\d20\fantasy\htmlxml\`
+3. Restart PCGen.
 
-```
-PCGen character ──(this template)──► JSON ──(paste)──► Roll20 HeroLab Import box
-```
+## Every character
 
-## Files
+1. **In PCGen:** load your character, then go to
+   **File → Export → Standard**.
+2. Pick **csheet_roll20_pf_community** from the list and **Export** it.
+   Save as something like `MyHero.json` (if it saves as `.htm`, just rename it).
+3. Open that file in Notepad, press **Ctrl+A** then **Ctrl+C** to copy everything.
+4. **In Roll20:** open your character sheet → **Settings** tab →
+   expand **HeroLab Character Import** → paste into the box → click anywhere
+   outside the box.
 
-| File | Purpose |
-|------|---------|
-| `csheet_roll20_pf_community.json.ftl` | The PCGen FreeMarker export template (the deliverable) |
-| `HOW-TO (Players).md` | Short player-facing quick-start |
-| `dev/` | Verification harness that runs the real importer against generated JSON |
+Done. Your stats, skills, saves, feats, gear, and bio fill in automatically.
 
-## Install & use
+## Good to know
 
-1. Copy `csheet_roll20_pf_community.json.ftl` into your PCGen output sheets:
-   `<PCGen>/outputsheets/d20/fantasy/htmlxml/`
-2. In PCGen: load a character, **File → Export → Standard**, pick
-   `csheet_roll20_pf_community`, export to a `.json` file (rename from `.htm` if needed).
-3. Open the file, copy all of it.
-4. In Roll20: character sheet **Settings** tab → expand **HeroLab Character
-   Import** → paste → click outside the box.
+- You'll set each item's **Equip Type** and **Location** by hand (the importer
+  doesn't carry those over).
+- Spells import automatically for spellcasters (Wizards bring their whole
+  spellbook, which can be a long list).
+- Re-importing overwrites the sheet, so do it before you start customizing.
 
-See `HOW-TO (Players).md` for the condensed version to hand to players.
+## Check these after import
 
-## What imports
+A quick once-over to confirm it worked. Compare against your PCGen sheet:
 
-- Identity, ability scores, saves, BAB, CMB/CMD, initiative, AC (incl. equipped
-  armor and shields)
-- Skills (with class-skill, ability, and ranks), feats, traits
-- Inventory with weights, costs, quantities, descriptions, weapon damage/crit,
-  armor/shield AC
-- HP, speed, languages, money, encumbrance, alignment, deity, bio
-- Spellcasters: spellclass, caster level, spells/day, concentration, and the full
-  spell list (school, components, DC, range, duration, description). Validated on
-  single-class casters and a multiclass + prestige caster (Evoker/Rogue/Arcane
-  Trickster).
+- **Core tab:** ability scores, HP, AC (Total / Touch / Flat-Footed), saves
+  (Fort/Ref/Will), initiative, and BAB/CMB/CMD.
+- **Skills:** a couple of your trained skills show the right totals, and class
+  skills are flagged.
+- **Combat/Inventory:** your weapons show the right damage and crit, worn armor
+  and shield show their AC bonus, and item counts look right.
+- **Feats & Abilities:** your feats and traits are present.
+- **Spells (casters only):** the spellcasting class appears with the right caster
+  level, spells per day, and concentration, and your spells are listed with the
+  correct level, school, and save DC.
 
-## Known limitations
+## If something didn't import correctly
 
-- **Equip Type & Location** import as uncategorized / Carried. The stock importer
-  has no field for these, so they're set manually after import.
-- **Wizards** import their entire spellbook (can be 100+ spells at high level).
-- Special abilities / class features beyond feats and traits are not yet mapped.
+Send us these three things so we can reproduce it:
 
-## Verifying changes (dev)
+1. **The PCGen export file** you pasted (the `.json` you generated). This is the
+   single most useful item — it's exactly what the importer received.
+2. **What's wrong, specifically:** the field/section, what it shows, and what it
+   should show (e.g. "Reflex save shows +4, should be +6"). A screenshot of the
+   sheet area is great.
+3. **A saved copy of the sheet** (optional but helpful): in your browser, with the
+   character sheet popped out of roll 20, use **File → Save Page As → Web Page, Complete**, and
+   send the resulting `.htm` file. This captures the actual values that landed.
 
-The `dev/` harness runs the **real** `HLImport.js` against generated JSON so you
-can confirm a character maps correctly before touching Roll20. See `dev/README.md`.
+Also note your **PCGen version** and the character's **class/level** (especially
+if it's a multiclass or prestige caster), since those affect how data exports.
 
-## Credits
-
-Reuses the Roll20 Pathfinder Community sheet's HeroLab importer
-(`HLImport.js`, not redistributed here). Built against PCGen's FreeMarker output
-token set.
